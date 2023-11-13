@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+                </button>
+            </div>
+        {% endfor %} 
+    {% endif %}
+    <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-6 offset-md-3">
+        <h2 class="text-center mb-4">Login</h2>
+          <form method="post" action="{% url 'login' %}" class="text-center">
+            {% csrf_token %}
+            <br>
+            {{ form.username }}<br>
+            {{ form.password }}<br><br>
+            <button type="submit" class="btn btn-primary">Login</button>
+          </form>
+  </div>
+  </div>
+  </div>
+{% endblock %}
