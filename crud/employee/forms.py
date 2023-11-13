@@ -24,3 +24,30 @@ class UserLoginForm(AuthenticationForm):
         super(UserLoginForm, self).__init__(*args, **kwargs)
         self.fields['username'].widget.attrs['placeholder'] = 'Username'
         self.fields['password'].widget.attrs['placeholder'] = 'Password'
+
+
+from .models import Employee
+
+class EmployeeForm(forms.ModelForm):
+    class Meta:
+        model = Employee
+        fields = '__all__'  # Use all fields from the Employee model
+    def __init__(self, *args, **kwargs):
+        super(EmployeeForm, self).__init__(*args, **kwargs)
+
+        # Set placeholders for each field
+        self.fields['first_name'].widget.attrs['placeholder'] = 'Enter first name'
+        self.fields['last_name'].widget.attrs['placeholder'] = 'Enter last name'
+        self.fields['email'].widget.attrs['placeholder'] = 'Enter email'
+        self.fields['phone_number'].widget.attrs['placeholder'] = 'Enter phone number'
+        self.fields['hire_date'].widget.attrs['placeholder'] = 'Enter hire date'
+        self.fields['job_title'].widget.attrs['placeholder'] = 'Enter job title'
+        self.fields['salary'].widget.attrs['placeholder'] = 'Enter salary'
+        self.fields['department'].widget.attrs['placeholder'] = 'Enter department'
+
+        # Add 'required' class to each field
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+            field.label = False
+            if field.required:
+                field.widget.attrs['required'] = 'required'

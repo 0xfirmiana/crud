@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+          <form method="post" action="{% url 'add_employee' %}" class="text-center">
+            {% csrf_token %}
+            <br>
+            {{ form.as_p}}<br>
+            <button type="submit" class="btn btn-primary">Add</button>
+          </form>
+</div>
+{% endblock %}

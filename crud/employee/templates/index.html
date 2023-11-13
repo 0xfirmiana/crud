@@ -2,8 +2,58 @@
 
 {% block content %}
 {% if user.is_authenticated %}
-<p>Hello, {{ user.username }}!</p>
+
+<h2>Hello, {{ user.username }}!</h2>
+{% if messages %}
+        {% for message in messages %}
+            <div class="alert {{ message.tags }} alert-dismissible" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-dismiss="alert" aria-label="Close">
+                </button>
+            </div>
+        {% endfor %} 
+    {% endif %}
+<div class="container mt-5">
+        <h2>Employee Table</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First Name</th>
+                    <th>Last Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Hire Date</th>
+                    <th>Job Title</th>
+                    <th>Salary</th>
+                    <th>Department</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+    {% if records %}
+        <tbody>
+        {% for record in records %}
+        <tr>
+        <td>{{record.id}}</td>
+        <td>{{record.first_name}}</td>
+        <td>{{record.last_name}}</td>
+        <td>{{record.email}}</td>
+        <td>{{record.phone_number}}</td>
+        <td>{{record.hire_date}}</td>
+        <td>{{record.job_title}}</td>
+        <td>{{record.salary}}</td>
+        <td>{{record.department}}</td>
+        <td><button class="btn btn-primary" onclick="window.location.href='/edit/{{record.id}}'">Edit</button>
+        <button class="btn btn-danger" onclick="window.location.href='/delete/{{record.id}}'">Delete</button></td>
+        </tr>
+        {%endfor%}
+        </tbody>
+    {% endif %}
+    </table>
+    <br>
+    <button onclick="window.location.href='/add'" class="btn btn-primary">Add record</button>
 {% else %}
 <p>You have to be logged in to see this page!</p>
 {% endif %}
+
 {% endblock %}

@@ -1,11 +1,17 @@
-from django.shortcuts import render, redirect
-from .forms import SignUpForm, UserLoginForm
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .forms import SignUpForm, UserLoginForm, EmployeeForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
+from .models import Employee 
 
 
 def index(request):
-    return render(request,'index.html')
+    if request.user.is_authenticated:
+        records = Employee.objects.all() 
+    else:
+        records = []
+    return render(request,'index.html', {'records': records})
 
 def logout_user(request):
     logout(request)
@@ -44,3 +50,38 @@ def signup(request):
     else:
         form = SignUpForm()
     return render(request, 'signup.html', {'form': form})
+
+def add_employee(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Record Added Sucessfully!")
+            return redirect('index')
+    else:
+        form = EmployeeForm()
+    return render(request, 'add_employee.html', {'form':form})
+
+def edit(request, pk):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    employee = get_object_or_404(Employee, pk=pk)
+    if request.method == 'POST':
+        form = EmployeeForm(request.POST, instance=employee) 
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Updated Successfully!", extra_tags="alert-success")
+            return redirect('index')
+    else:
+        form = EmployeeForm(instance=employee)
+    return render(request, 'edit_record.html', {'form':form})
+
+def delete(request, pk):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    employee = get_object_or_404(Employee, pk=pk)
+    employee.delete()
+    messages.success(request, "Deleted Successfully!", extra_tags="alert-success")
+    return redirect('index')
