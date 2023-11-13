@@ -16,7 +16,8 @@
 <div class="container mt-5">
             <input type="text" class="form-control" id="searchInput" placeholder="Search">
                 <br>
-            <button type="submit" onclick="search()" class="btn btn-primary mb-2">Search</button>
+            <button type="submit" onclick="search()" class="btn btn-primary">Search</button>
+            <button type="submit" class="btn btn-primary" onclick="window.location.href = '/'">Back</button>
 </div>
 <div class="container mt-5">
         <h2>Employee Table</h2>
@@ -65,7 +66,5 @@ function search(){
     q = document.getElementById('searchInput').value;
     window.location.href = '/search/?q=' + encodeURIComponent(q);
 }
-    
-
 </script>
 {% endblock %}

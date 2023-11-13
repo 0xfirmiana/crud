@@ -4,6 +4,8 @@ from .forms import SignUpForm, UserLoginForm, EmployeeForm
 from django.contrib.auth import login, authenticate, logout
 from django.contrib import messages
 from .models import Employee 
+from django.db.models import Q
+from django.db import models
 
 
 def index(request):
@@ -58,7 +60,7 @@ def add_employee(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Record Added Sucessfully!")
+            messages.success(request, "Record Added Sucessfully!", extra_tags="alert-success")
             return redirect('index')
     else:
         form = EmployeeForm()
@@ -85,3 +87,21 @@ def delete(request, pk):
     employee.delete()
     messages.success(request, "Deleted Successfully!", extra_tags="alert-success")
     return redirect('index')
+
+def search(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+    q = request.GET.get('q', '')
+    if q:
+        search_query = Q()
+        for field in Employee._meta.fields:
+            if isinstance(field, (models.CharField, models.TextField)):
+                search_query |= Q(**{f"{field.name}__icontains": q})
+        records = Employee.objects.filter(search_query)
+        if not records:
+            messages.error(request, "No records found!", extra_tags="alert-danger")
+            return redirect('index')
+        messages.success(request, f"Results for query: {q}", extra_tags="alert-success")
+        return render(request, 'search.html', {'records':records})
+    else:
+        redirect('index')
